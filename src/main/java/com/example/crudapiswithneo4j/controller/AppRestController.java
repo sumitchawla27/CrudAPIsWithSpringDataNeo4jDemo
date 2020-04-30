@@ -52,7 +52,7 @@ public class AppRestController {
 
 	@GetMapping("/{id}")
 	public Person fetchPerson(@PathVariable("id") Long id) {
-		return personRepository.findById(id).orElseThrow(() -> (new ResourceNotFoundException("Resource not found")));
+		return personRepository.findByIdAndDeleted(id, false).orElseThrow(() -> (new ResourceNotFoundException("Resource not found")));
 	}
 
 	//we are doing soft delete of Person Node entities
