@@ -57,6 +57,7 @@ public class AppExceptionHandler {
 		return exception.getMessage();
 	}
 
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	List<ObjectError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {

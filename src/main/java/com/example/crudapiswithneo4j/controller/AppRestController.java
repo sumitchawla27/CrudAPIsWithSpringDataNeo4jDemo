@@ -2,9 +2,11 @@ package com.example.crudapiswithneo4j.controller;
 
 
 import com.example.crudapiswithneo4j.dtos.PersonDTO;
+import com.example.crudapiswithneo4j.entity.Pet;
 import com.example.crudapiswithneo4j.exceptionHandling.ResourceNotFoundException;
 import com.example.crudapiswithneo4j.entity.Person;
 import com.example.crudapiswithneo4j.repository.PersonRepository;
+import com.example.crudapiswithneo4j.repository.PetRepository;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +29,12 @@ public class AppRestController {
 	PersonRepository personRepository;
 
 	@Autowired
+	PetRepository petRepository;
+
+	@Autowired
 	ModelMapper modelMapper;
 
-	//Note- I have kept service related code in controller only as it is for demo purpose and also short
+	//Note- I have kept service related code in controller only as it is for demo purpose only and also short
 
 	@PostMapping
 	public Person createPerson(@Valid @RequestBody PersonDTO personDTO) {
@@ -44,12 +49,23 @@ public class AppRestController {
 		return personRepository.save(person);
 	}
 
-	@PutMapping("/{id}/{teammateId}")
-	public Person setConnectionWithOtherPerson(@PathVariable("id") Long id, @PathVariable("teammateId") Long teammateId ) {
+
+	@PutMapping("/{id}/{petName}")
+	public Person setConnectionWithOtherPerson(@PathVariable("id") Long id, @PathVariable("petName") String petName ) {
 		Person person = personRepository.findByIdAndDeleted(id,false).orElseThrow(() -> (new ResourceNotFoundException("Resource not found")));
-		Person teamMate = personRepository.findByIdAndDeleted(teammateId,false).orElseThrow(() -> (new ResourceNotFoundException("TeamMate not found")));
-		person.worksWith(teamMate);
-		return personRepository.save(person);
+		Pet pet = petRepository.findByPetName(petName);
+		if(pet==null) {
+				pet = new Pet();
+				pet.setPetName(petName);
+				petRepository.save(pet);
+				person.addPet(pet);
+		}
+		else if (!person.getPets().contains(pet)){
+				petRepository.save(pet);
+				person.addPet(pet);
+		}
+		person = personRepository.save(person);
+		return person;
 	}
 
 	@GetMapping("/{id}")

@@ -1,21 +1,16 @@
 package com.example.crudapiswithneo4j.entity;
 
-import org.neo4j.driver.internal.shaded.reactor.util.annotation.NonNull;
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
-import org.neo4j.ogm.annotation.Required;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -59,23 +54,16 @@ public class Person {
 		this.phoneNumber = phoneNumber;
 	}
 
-	@Relationship(type = "TEAMMATE", direction = Relationship.UNDIRECTED)
-	public Set<Person> teammates;
+	@Relationship(type = "OWNS", direction = Relationship.UNDIRECTED)
+	public Set<Pet> pets;
 
-	public void worksWith(Person person) {
-		if (teammates == null) {
-			teammates = new HashSet<>();
+
+	public void addPet(Pet pet) {
+		if (pets == null) {
+			pets = new HashSet<>();
 		}
-		teammates.add(person);
+		pets.add(pet);
 	}
 
-	public String toString() {
-
-		return this.name + "'s teammates => "
-				+ Optional.ofNullable(this.teammates).orElse(
-				Collections.emptySet()).stream()
-				.map(Person::getName)
-				.collect(Collectors.toList());
-	}
 
 }
