@@ -29,6 +29,8 @@ public class AppRestController {
 	@Autowired
 	ModelMapper modelMapper;
 
+	//Note- I have kept service related code in controller only as it is for demo purpose and also short
+
 	@PostMapping
 	public Person createPerson(@Valid @RequestBody PersonDTO personDTO) {
 		Person person = new Person(personDTO.getName(), personDTO.getEmail(), personDTO.getPhoneNumber());
